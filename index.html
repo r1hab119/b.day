@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Happy Birthday!</title>
+<style>
+  body {
+    margin: 0;
+    font-family: 'Comic Sans MS', cursive, sans-serif;
+    background: linear-gradient(120deg, #b0c4de, #d3d3d3); /* neutral gradient */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+    text-align: center;
+  }
+
+  h1 {
+    font-size: 3em;
+    color: #333;
+    text-shadow: 2px 2px #888;
+    animation: bounce 1s infinite alternate;
+  }
+
+  @keyframes bounce {
+    0% { transform: translateY(0px); }
+    100% { transform: translateY(-20px); }
+  }
+
+  button {
+    margin-top: 20px;
+    padding: 15px 30px;
+    font-size: 1.2em;
+    border: none;
+    border-radius: 10px;
+    background: #555; /* neutral button color */
+    color: white;
+    cursor: pointer;
+    transition: transform 0.2s;
+  }
+
+  button:hover {
+    transform: scale(1.2);
+  }
+
+  canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+  }
+</style>
+</head>
+<body>
+
+<h1>🎉 Happy Birthday! 🎉</h1>
+<button id="clickBtn">Click Me!</button>
+
+<canvas id="confetti"></canvas>
+
+<script>
+const canvas = document.getElementById('confetti');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let confettiParticles = [];
+const colors = ['#f0a500','#f28c28','#f25c05','#f2d479','#f29e05'];
+
+function createConfetti() {
+  for(let i=0;i<150;i++){
+    confettiParticles.push({
+      x: Math.random()*canvas.width,
+      y: Math.random()*canvas.height,
+      r: Math.random()*6+4,
+      d: Math.random()*20+10,
+      color: colors[Math.floor(Math.random()*colors.length)],
+      tilt: Math.random()*10-10,
+      tiltAngleIncremental: Math.random()*0.07+0.05,
+      tiltAngle: 0
+    });
+  }
+}
+
+function drawConfetti(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  confettiParticles.forEach(p=>{
+    ctx.beginPath();
+    ctx.lineWidth = p.r / 2;
+    ctx.strokeStyle = p.color;
+    ctx.moveTo(p.x + p.tilt + p.r/4, p.y);
+    ctx.lineTo(p.x + p.tilt, p.y + p.tilt + p.r/4);
+    ctx.stroke();
+  });
+  updateConfetti();
+}
+
+function updateConfetti(){
+  confettiParticles.forEach(p=>{
+    p.tiltAngle += p.tiltAngleIncremental;
+    p.y += (Math.cos(p.d) + 3 + p.r/2)/2;
+    p.tilt = Math.sin(p.tiltAngle) * 15;
+
+    if(p.y > canvas.height){
+      p.y = -10;
+      p.x = Math.random()*canvas.width;
+    }
+  });
+  requestAnimationFrame(drawConfetti);
+}
+
+createConfetti();
+drawConfetti();
+
+/* Fixed button click using addEventListener */
+document.getElementById("clickBtn").addEventListener("click", function(){
+    alert("Yet another revolution around the sun. Cool.");
+});
+</script>
+
+</body>
+</html>
